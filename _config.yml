@@ -3,11 +3,11 @@
 ## Source: https://github.com/hexojs/hexo/
 
 # Site
-title: 我的博客
-subtitle: ''
-description: ''
-keywords:
-author: 博主
+title: flewfish 的博客-林深时见鹿
+subtitle: 人生海海，山山而川
+description: 专注于网络安全技术研究 | 渗透测试实战案例 | 漏洞复现分析 | 内网渗透免杀横行
+keywords: 网络安全,渗透测试,CTF,漏洞复现,内网渗透,免杀
+author: flewfish
 language: zh-CN
 timezone: 'Asia/Shanghai'
 
