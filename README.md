@@ -1,121 +1,100 @@
-# 我的博客
+﻿# 鎴戠殑鍗氬
 
-基于 [Hexo](https://hexo.io/) + [Butterfly 主题](https://github.com/jerryc127/hexo-theme-butterfly)，
-由 **GitHub Actions 自动构建并部署**到 GitHub Pages。
-
-线上地址：https://flewfish.github.io/
+鍩轰簬 [Hexo](https://hexo.io/) + [Butterfly 涓婚](https://github.com/jerryc127/hexo-theme-butterfly)锛?鐢?**GitHub Actions 鑷姩鏋勫缓骞堕儴缃?*鍒?GitHub Pages銆?
+绾夸笂鍦板潃锛歨ttps://flewfish.github.io/
 
 ---
 
-## 它是怎么工作的
-
+## 瀹冩槸鎬庝箞宸ヤ綔鐨?
 ```
-你写 Markdown  →  git push 到 main  →  GitHub Actions 自动 npm ci + hexo g  →  发布到 GitHub Pages
+浣犲啓 Markdown  鈫? git push 鍒?main  鈫? GitHub Actions 鑷姩 npm ci + hexo g  鈫? 鍙戝竷鍒?GitHub Pages
 ```
 
-**你的电脑只是「写作工具」，不是服务器。** 电脑关机、损坏、换新机，都不影响别人访问博客。
-所有源码（Markdown 原文 + 配置 + 主题）都存在 GitHub 上，换任何设备 clone 下来就能接着写。
-
+**浣犵殑鐢佃剳鍙槸銆屽啓浣滃伐鍏枫€嶏紝涓嶆槸鏈嶅姟鍣ㄣ€?* 鐢佃剳鍏虫満銆佹崯鍧忋€佹崲鏂版満锛岄兘涓嶅奖鍝嶅埆浜鸿闂崥瀹€?鎵€鏈夋簮鐮侊紙Markdown 鍘熸枃 + 閰嶇疆 + 涓婚锛夐兘瀛樺湪 GitHub 涓婏紝鎹换浣曡澶?clone 涓嬫潵灏辫兘鎺ョ潃鍐欍€?
 ---
 
-## 一、日常：发一篇新文章
+## 涓€銆佹棩甯革細鍙戜竴绡囨柊鏂囩珷
 
-### 方式 A：本地写（推荐）
+### 鏂瑰紡 A锛氭湰鍦板啓锛堟帹鑽愶級
 
 ```powershell
-cd D:\个人博客
+cd D:\涓汉鍗氬
 
-# 1. 新建文章
-npx hexo new "文章标题"
+# 1. 鏂板缓鏂囩珷
+npx hexo new "鏂囩珷鏍囬"
 
-# 2. 编辑 source/_posts/文章标题.md
-#    （Markdown 语法 + 开头的 Front Matter）
+# 2. 缂栬緫 source/_posts/鏂囩珷鏍囬.md
+#    锛圡arkdown 璇硶 + 寮€澶寸殑 Front Matter锛?
+# 3. 鏈湴棰勮锛堝彲閫夛紝Ctrl+C 鍋滄锛?npx hexo server      # 娴忚鍣ㄦ墦寮€ http://localhost:4000
 
-# 3. 本地预览（可选，Ctrl+C 停止）
-npx hexo server      # 浏览器打开 http://localhost:4000
-
-# 4. 发布
+# 4. 鍙戝竷
 git add -A
-git commit -m "新增文章：文章标题"
+git commit -m "鏂板鏂囩珷锛氭枃绔犳爣棰?
 git push
 ```
 
-推送后约 **1 分钟**自动上线。
-
-### 方式 B：手机上写
-
-1. 手机浏览器打开  
+鎺ㄩ€佸悗绾?**1 鍒嗛挓**鑷姩涓婄嚎銆?
+### 鏂瑰紡 B锛氭墜鏈轰笂鍐?
+1. 鎵嬫満娴忚鍣ㄦ墦寮€  
    `https://github.com/flewfish/flewfish.github.io/tree/main/source/_posts`
-2. 点 **Add file → Create new file**
-3. 文件名填 `我的文章.md`
-4. 内容按下面的格式写
-5. 点 **Commit changes**
+2. 鐐?**Add file 鈫?Create new file**
+3. 鏂囦欢鍚嶅～ `鎴戠殑鏂囩珷.md`
+4. 鍐呭鎸変笅闈㈢殑鏍煎紡鍐?5. 鐐?**Commit changes**
 
-**手机也能发文章，完全不依赖电脑。**
+**鎵嬫満涔熻兘鍙戞枃绔狅紝瀹屽叏涓嶄緷璧栫數鑴戙€?*
 
 ---
 
-## 二、文章的 Front Matter 格式
+## 浜屻€佹枃绔犵殑 Front Matter 鏍煎紡
 
 ```yaml
 ---
-title: 文章标题
+title: 鏂囩珷鏍囬
 date: 2026-10-16 20:00:00
 tags:
-  - 随笔
+  - 闅忕瑪
 categories:
-  - 生活
-cover: /img/封面.jpg          # 可选：文章封面
-description: 一句话摘要        # 可选：首页显示的摘要
-swiper_index: 1              # 可选：数字越大越靠前，出现在首页轮播图
+  - 鐢熸椿
+cover: /img/灏侀潰.jpg          # 鍙€夛細鏂囩珷灏侀潰
+description: 涓€鍙ヨ瘽鎽樿        # 鍙€夛細棣栭〉鏄剧ず鐨勬憳瑕?swiper_index: 1              # 鍙€夛細鏁板瓧瓒婂ぇ瓒婇潬鍓嶏紝鍑虹幇鍦ㄩ椤佃疆鎾浘
 ---
-这里开始写正文，用 Markdown 语法……
+杩欓噷寮€濮嬪啓姝ｆ枃锛岀敤 Markdown 璇硶鈥︹€?
+## 浜岀骇鏍囬
 
-## 二级标题
-
-- 列表项
-- **加粗**、`代码`、[链接](https://example.com)
+- 鍒楄〃椤?- **鍔犵矖**銆乣浠ｇ爜`銆乕閾炬帴](https://example.com)
 ```
 
-> **首页轮播图**由 `hexo-butterfly-swiper` 插件驱动。
-> 只有 Front Matter 里写了 `swiper_index` 的文章才会进轮播，并且需要配 `cover` 封面图。
-
+> **棣栭〉杞挱鍥?*鐢?`hexo-butterfly-swiper` 鎻掍欢椹卞姩銆?> 鍙湁 Front Matter 閲屽啓浜?`swiper_index` 鐨勬枃绔犳墠浼氳繘杞挱锛屽苟涓旈渶瑕侀厤 `cover` 灏侀潰鍥俱€?
 ---
 
-## 三、本地常用命令
-
-| 命令 | 作用 |
+## 涓夈€佹湰鍦板父鐢ㄥ懡浠?
+| 鍛戒护 | 浣滅敤 |
 |---|---|
-| `npx hexo new "标题"` | 新建一篇文章 |
-| `npx hexo new page "名字"` | 新建一个独立页面 |
-| `npx hexo server` | 本地预览 → http://localhost:4000 |
-| `npx hexo clean` | 清理缓存和 `public/` |
-| `npx hexo generate` | 生成静态文件到 `public/` |
-| `npm install` | 首次 clone 后安装依赖 |
+| `npx hexo new "鏍囬"` | 鏂板缓涓€绡囨枃绔?|
+| `npx hexo new page "鍚嶅瓧"` | 鏂板缓涓€涓嫭绔嬮〉闈?|
+| `npx hexo server` | 鏈湴棰勮 鈫?http://localhost:4000 |
+| `npx hexo clean` | 娓呯悊缂撳瓨鍜?`public/` |
+| `npx hexo generate` | 鐢熸垚闈欐€佹枃浠跺埌 `public/` |
+| `npm install` | 棣栨 clone 鍚庡畨瑁呬緷璧?|
 
-> ⚠️ **你不需要执行 `hexo deploy`。** 部署完全交给 GitHub Actions。
-
+> 鈿狅笍 **浣犱笉闇€瑕佹墽琛?`hexo deploy`銆?* 閮ㄧ讲瀹屽叏浜ょ粰 GitHub Actions銆?
 ---
 
-## 四、改网站信息
+## 鍥涖€佹敼缃戠珯淇℃伅
 
-| 想改什么 | 改哪个文件 |
+| 鎯虫敼浠€涔?| 鏀瑰摢涓枃浠?|
 |---|---|
-| 站点标题、副标题、作者、语言、网址、文章数 | `_config.yml` |
-| 导航菜单、头像、横幅图、社交链接、暗色模式、搜索、页脚 | `_config.butterfly.yml` |
-| 文章内容 | `source/_posts/*.md` |
-| 关于页 | `source/about/index.md` |
-| 留言板 | `source/comments/index.md` |
-| 首页轮播开关与样式 | `_config.butterfly.yml` 末尾的 `swiper:` 段 |
+| 绔欑偣鏍囬銆佸壇鏍囬銆佷綔鑰呫€佽瑷€銆佺綉鍧€銆佹枃绔犳暟 | `_config.yml` |
+| 瀵艰埅鑿滃崟銆佸ご鍍忋€佹í骞呭浘銆佺ぞ浜ら摼鎺ャ€佹殫鑹叉ā寮忋€佹悳绱€侀〉鑴?| `_config.butterfly.yml` |
+| 鏂囩珷鍐呭 | `source/_posts/*.md` |
+| 鍏充簬椤?| `source/about/index.md` |
+| 鐣欒█鏉?| `source/comments/index.md` |
+| 棣栭〉杞挱寮€鍏充笌鏍峰紡 | `_config.butterfly.yml` 鏈熬鐨?`swiper:` 娈?|
 
-> `_config.butterfly.yml` 会**覆盖** `themes/butterfly/_config.yml`，所以你只改前者即可，
-> 这样将来更新主题不会冲掉你的配置。
-
-### 换头像 / 横幅图
-
-1. 把图片放进 `source/img/`（没有就新建这个目录）
-2. 在 `_config.butterfly.yml` 里引用，例如：
-   ```yaml
+> `_config.butterfly.yml` 浼?*瑕嗙洊** `themes/butterfly/_config.yml`锛屾墍浠ヤ綘鍙敼鍓嶈€呭嵆鍙紝
+> 杩欐牱灏嗘潵鏇存柊涓婚涓嶄細鍐叉帀浣犵殑閰嶇疆銆?
+### 鎹㈠ご鍍?/ 妯箙鍥?
+1. 鎶婂浘鐗囨斁杩?`source/img/`锛堟病鏈夊氨鏂板缓杩欎釜鐩綍锛?2. 鍦?`_config.butterfly.yml` 閲屽紩鐢紝渚嬪锛?   ```yaml
    avatar:
      img: /img/avatar.png
    index_img: /img/banner.jpg
@@ -123,37 +102,41 @@ swiper_index: 1              # 可选：数字越大越靠前，出现在首页�
 
 ---
 
-## 五、⚠️ 已经填好的坑，请不要随意改动
+## 浜斻€佲殸锔?宸茬粡濉ソ鐨勫潙锛岃涓嶈闅忔剰鏀瑰姩
 
-| 项 | 设定 | 为什么 |
+| 椤?| 璁惧畾 | 涓轰粈涔?|
 |---|---|---|
-| `hexo` | `^7.3.0` | Hexo 8 依赖 `strip-ansi@^7`（纯 ESM），需要 Node ≥ 20.19 才能 `require()`。本机 Node 是 **20.12.2**，升到 Hexo 8 会直接崩 |
-| 第三方 CDN | `fastly.jsdelivr.net` | 国内 **`cdn.jsdelivr.net` 已被墙**（实测连接超时）。`fastly` 是同一份内容的官方备用节点，同样支持自动压缩。**不要改回 jsdelivr**，否则图标和特效会全挂 |
-| 本地搜索 | `hexo-generator-searchdb` | Butterfly 的 `local_search` 依赖它生成 `search.xml` 索引；缺了会直接构建报错 `Cannot read properties of undefined (reading 'path')` |
+| `hexo` | `^7.3.0` | Hexo 8 渚濊禆 `strip-ansi@^7`锛堢函 ESM锛夛紝闇€瑕?Node 鈮?20.19 鎵嶈兘 `require()`銆傛湰鏈?Node 鏄?**20.12.2**锛屽崌鍒?Hexo 8 浼氱洿鎺ュ穿 |
+| 绗笁鏂?CDN | `fastly.jsdelivr.net` | 鍥藉唴 **`cdn.jsdelivr.net` 宸茶澧?*锛堝疄娴嬭繛鎺ヨ秴鏃讹級銆俙fastly` 鏄悓涓€浠藉唴瀹圭殑瀹樻柟澶囩敤鑺傜偣锛屽悓鏍锋敮鎸佽嚜鍔ㄥ帇缂┿€?*涓嶈鏀瑰洖 jsdelivr**锛屽惁鍒欏浘鏍囧拰鐗规晥浼氬叏鎸?|
+| 鏈湴鎼滅储 | `hexo-generator-searchdb` | Butterfly 鐨?`local_search` 渚濊禆瀹冪敓鎴?`search.xml` 绱㈠紩锛涚己浜嗕細鐩存帴鏋勫缓鎶ラ敊 `Cannot read properties of undefined (reading 'path')` |
 
-改完主题或依赖后，**先本地跑一次** `npx hexo generate` 确认没报错再推送。
+鏀瑰畬涓婚鎴栦緷璧栧悗锛?*鍏堟湰鍦拌窇涓€娆?* `npx hexo generate` 纭娌℃姤閿欏啀鎺ㄩ€併€?
+---
+
+## 鍏€侀儴缃?
+- 鎺ㄩ€佸埌 `main` 鍒嗘敮 鈫?鑷姩閮ㄧ讲
+- 涔熷彲鍦ㄤ粨搴?**Actions** 椤甸潰鐐?**Run workflow** 鎵嬪姩瑙﹀彂
+- 閮ㄧ讲閰嶇疆锛歚.github/workflows/deploy.yml`
+- 鏋勫缓鏃ュ織锛歨ttps://github.com/flewfish/flewfish.github.io/actions
 
 ---
 
-## 六、部署
+## 涓冦€佸凡閰嶇疆鐨勫寮哄姛鑳?
+| 鍔熻兘 | 瀹炵幇 | 浣嶇疆 |
+|---|---|---|
+| **璇勮绯荤粺** | [giscus](https://giscus.app/zh-CN)锛岃瘎璁哄瓨鍦ㄦ湰浠撳簱鐨?Discussions 閲岋紙鍒嗙被 `General`锛夛紝璁垮鐢?GitHub 璐﹀彿鐧诲綍 | `_config.butterfly.yml` 鐨?`giscus:` 娈?|
+| **live2d 鐪嬫澘濞?* | `live2d-widgets@1`锛圡IT锛?| `inject.bottom` |
+| **妯辫姳椋樿惤** | `sakura-js 1.1.1`锛圡IT锛夛紝**宸茶嚜鎵樼** | `source/js/sakura.min.js` |
+| **鍏夋爣鎷栧熬** | 鑷疄鐜?canvas 绮掑瓙锛岃Е灞?鍑忓皯鍔ㄦ晥涓嬭嚜鍔ㄧ鐢?| `source/js/cursor-trail.js` |
+| **棣栭〉杞挱鍥?* | `hexo-butterfly-swiper` | `_config.butterfly.yml` 鏈熬 `swiper:` 娈?|
 
-- 推送到 `main` 分支 → 自动部署
-- 也可在仓库 **Actions** 页面点 **Run workflow** 手动触发
-- 部署配置：`.github/workflows/deploy.yml`
-- 构建日志：https://github.com/flewfish/flewfish.github.io/actions
-
----
-
-## 七、还没做的（想要的话再说）
-
-- [ ] **评论系统**：留言板目前是静态页，需要接入 [giscus](https://giscus.app/zh-CN)（免费、用 GitHub 账号登录）或 Twikoo / Waline
-- [ ] **live2d 看板娘**、**樱花飘落**、**自定义光标**：这几个是参考站的自定义脚本，需要额外注入
-- [ ] **站点信息**：站名、签名、头像、横幅图目前是占位
-- [ ] **自定义域名**（可选，约 50–80 元/年，不是服务器）
+> 妯辫姳涓庡厜鏍囨槸**鑷墭绠?*鐨勶紝涓嶄緷璧栫涓夋柟 CDN銆?> live2d 鍥犳ā鍨嬫枃浠惰繃澶ф棤娉曡嚜鎵樼锛岃蛋 `fastly.jsdelivr.net`銆?
+## 鍏€佽繕娌″仛鐨勶紙鎯宠鐨勮瘽鍐嶈锛?
+- [ ] **鑷畾涔夊煙鍚?*锛堝彲閫夛紝绾?50鈥?0 鍏?骞达紝**涓嶆槸鏈嶅姟鍣?*锛?- [ ] **鏂囩珷灏侀潰鍥?*锛氶椤佃疆鎾浘闇€瑕佹瘡绡囨枃绔犲湪 front-matter 閲岄厤 `cover`
 
 ---
 
-## 八、在新电脑上恢复
+## 鍏€佸湪鏂扮數鑴戜笂鎭㈠
 
 ```powershell
 git clone git@github.com:flewfish/flewfish.github.io.git
@@ -162,4 +145,4 @@ npm install
 npx hexo server
 ```
 
-就这些 —— 环境装好（Git + Node.js）后，一条 clone 就完整复原。
+灏辫繖浜?鈥斺€?鐜瑁呭ソ锛圙it + Node.js锛夊悗锛屼竴鏉?clone 灏卞畬鏁村鍘熴€?
