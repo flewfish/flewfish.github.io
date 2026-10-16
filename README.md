@@ -144,23 +144,69 @@ swiper_index: 1              # 可选：数字越大越靠前，出现在首页�
 
 ---
 
-## 七、已配置的增强功能
+## 七、主题魔改（紫罗兰玻璃拟态）
+
+主题在 Butterfly 基础上做了一层视觉改造，风格叫「紫罗兰玻璃拟态」：
+粉紫渐变卡片 + 毛玻璃模糊 + 大圆角 + 柔光阴影。
+
+**所有魔改只落在两个文件里，没有动 `themes/butterfly` 下任何源码**，
+所以将来升级主题不会把改动冲掉：
+
+| 文件 | 作用 |
+|---|---|
+| `source/css/modify.css` | 全部样式覆盖（配色、导航栏、卡片、文章页、页脚、搜索…） |
+| `source/js/cursor.js` | 紫水晶月光光标 |
+
+这两个文件通过 `_config.butterfly.yml` 的 `inject` 段挂上去：
+
+```yaml
+inject:
+  head:
+    - '<link rel="stylesheet" href="/css/modify.css">'
+  bottom:
+    - '<script src="/js/cursor.js"></script>'
+```
+
+### 想换配色？只改一处
+
+`_config.butterfly.yml` 里的 `theme_color:` 段控制主色，改 `main` 就能整体换色。
+`source/css/modify.css` 顶部的「设计令牌」区（`--ff-*` 变量）控制卡片渐变和圆角。
+
+### 已配置的增强功能
 
 | 功能 | 实现 | 位置 |
 |---|---|---|
 | **评论系统** | [giscus](https://giscus.app/zh-CN)，评论存在本仓库的 Discussions 里（分类 `General`），访客用 GitHub 账号登录 | `_config.butterfly.yml` 的 `giscus:` 段 |
 | **live2d 看板娘** | `live2d-widgets@1`（MIT） | `_config.butterfly.yml` 的 `inject.bottom` |
 | **樱花飘落** | `sakura-js 1.1.1`（MIT），**已自托管** | `source/js/sakura.min.js` |
-| **光标拖尾** | 自实现 canvas 粒子，触屏 / 减少动效下自动禁用 | `source/js/cursor-trail.js` |
-| **首页轮播图** | `hexo-butterfly-swiper` | `_config.butterfly.yml` 末尾 `swiper:` 段 |
+| **紫水晶月光光标** | 自实现 canvas：双层光环 + 月牙 + 水晶拖尾 + 点击爆发，触屏 / 减少动效下自动禁用，**保留系统光标** | `source/js/cursor.js` |
+| **字数统计 / 阅读时长** | `hexo-wordcount` | `_config.butterfly.yml` 的 `wordcount:` 段 |
+| **相关文章 / 分享 / 复制带版权** | Butterfly 内置 | `_config.butterfly.yml` |
+| **自定义 404 页** | Butterfly 内置 | `_config.butterfly.yml` 的 `error_404:` 段 |
 
 > 樱花与光标是**自托管**的，不依赖第三方 CDN。
 > live2d 因模型文件过大无法自托管，走 `fastly.jsdelivr.net`。
 
+### 关于首页轮播图（当前是关掉的）
+
+`hexo-butterfly-swiper` 在 `_config.butterfly.yml` 末尾，**目前 `enable: false`**。
+
+关掉的原因：轮播只收录 front-matter 里写了 `swiper_index` 的文章，
+一篇都没有时它照样会往首页注入一个**空的轮播外壳**，看着就是一块空白。
+
+等你发了几篇带封面的文章，给想在轮播里出现的文章加上：
+
+```yaml
+cover: /img/banner.jpg
+swiper_index: 1        # 数字越大越靠前
+```
+
+然后把 `swiper.enable` 改回 `true` 就行。
+
 ## 八、还没做的（想要的话再说）
 
 - [ ] **自定义域名**（可选，约 50–80 元/年，**不是服务器**）
-- [ ] **文章封面图**：首页轮播图需要每篇文章在 front-matter 里配 `cover`
+- [ ] **关于页的个人信息**：`source/about/index.md` 里目前是通用文案，换成你自己的经历
 
 ---
 

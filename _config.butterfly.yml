@@ -15,7 +15,8 @@ nav:
   display_title: true
   display_post_title: true
   # Whether to fix navigation bar
-  fixed: false
+  # 开启后滚动时导航栏吸顶，配合 custom.css 的紫罗兰毛玻璃效果
+  fixed: true
 
 menu:
   首页: / || fas fa-home
@@ -32,24 +33,49 @@ menu:
 code_blocks:
   # Code block theme: darker / pale night / light / ocean / false
   theme: light
-  macStyle: false
+  # macOS 风格的红黄绿小圆点工具条
+  macStyle: true
   # Code block height limit (unit: px)
-  height_limit: false
+  # 超过这个高度出现「展开」按钮，避免长代码刷屏
+  height_limit: 400
   word_wrap: false
-
+  # 折叠按钮的文字是否触发中文换行
   # Toolbar
   copy: true
   language: true
   # true: shrink the code blocks | false: expand the code blocks | none: expand code blocks and hide the button
   shrink: false
-  fullpage: false
+  # 右上角全屏按钮，看长代码很实用
+  fullpage: true
 
 # Social media links
 # Formal:
 #   icon: link || the description || color
 social:
-  fab fa-github: https://github.com/flewfish || Github || '#24292e'
+  fab fa-github: https://github.com/flewfish || Github || '#6a0dad'
   # fas fa-envelope: mailto:xxxxxx@gmail.com || Email || '#4a7dbe'
+
+# --------------------------------------
+# Theme Colour
+# 紫罗兰玻璃拟态配色，改这一处就能整体换色
+# --------------------------------------
+theme_color:
+  enable: true
+  main: '#6a0dad'                      # 主色（导航、按钮、标题点缀）
+  paginator: '#9b30ff'                 # 分页器
+  button_hover: '#9932cc'              # 按钮悬停
+  text_selection: '#c77dff'            # 选中文字底色
+  link_color: '#8a2be2'                # 正文链接
+  meta_color: '#8a6fb0'                # 时间、分类等次要信息
+  hr_color: '#c9a9ff'                  # 分割线
+  code_foreground: '#7b3fa0'           # 行内代码文字
+  code_background: 'rgba(106, 13, 173, 0.06)'
+  toc_color: '#8a2be2'                 # 目录文字
+  blockquote_padding_color: '#9d4edd'  # 引用块左侧竖条
+  blockquote_background_color: 'rgba(157, 78, 221, 0.08)'
+  scrollbar_color: '#9d4edd'
+  meta_theme_color_light: '#f5f0fa'    # 浏览器地址栏主题色（浅色）
+  meta_theme_color_dark: '#2d0a3d'     # 浏览器地址栏主题色（深色）
 
 # --------------------------------------
 # Image Settings
@@ -95,7 +121,8 @@ footer_img: false
 # Website Background
 # Can set it to color, image URL or an array containing colors and/or image URLs
 # If an array is provided, a random background will be selected from the array on each load
-background:
+# 全站背景图。custom.css 会给 #web_bg 加高斯模糊 + 紫罗兰渐变蒙层
+background: /img/bg.jpg
 
 cover:
   # Disable the cover or not
@@ -103,8 +130,9 @@ cover:
   aside_enable: true
   archives_enable: true
   # When cover is not set, the default cover is displayed
+  # 没在 front-matter 里写 cover 的文章会用这张兜底
   default_cover:
-    # - xxx.jpg
+    - /img/cover-default.jpg
 
 # Replace Broken Images
 error_img:
@@ -113,9 +141,9 @@ error_img:
 
 # A simple 404 page
 error_404:
-  enable: false
-  subtitle: 'Page Not Found'
-  background: /img/error-page.png
+  enable: true
+  subtitle: '这里没有你要找的页面'
+  background: /img/bg.jpg
 
 post_meta:
   # Home Page
@@ -179,7 +207,8 @@ subtitle:
 # 5: Info displayed on the cover
 # 6: Masonry layout - Cover on top, info on the bottom
 # 7: Masonry layout - Info displayed on the cover
-index_layout: 3
+# 6 = 瀑布流双栏（封面在上、信息在下），配玻璃拟态卡片最合适
+index_layout: 6
 
 # Display the article introduction on homepage
 # 1: description
@@ -187,9 +216,10 @@ index_layout: 3
 # 3: auto_excerpt (default)
 # false: do not show the article introduction
 index_post_content:
-  method: 3
+  # 2 = 有 description 就用 description，没有则自动截取正文
+  method: 2
   # If you set method to 2 or 3, the length need to config
-  length: 500
+  length: 200
 
 # --------------------------------------
 # Post Settings
@@ -207,7 +237,7 @@ toc:
 post_copyright:
   enable: true
   decode: false
-  author_href:
+  author_href: https://github.com/flewfish
   license: CC BY-NC-SA 4.0
   license_url: https://creativecommons.org/licenses/by-nc-sa/4.0/
 
@@ -246,30 +276,41 @@ related_post:
 post_pagination: 1
 
 # Displays outdated notice for a post
+# 文章超过一年没更新时，顶部提醒读者内容可能已过时
 noticeOutdate:
-  enable: false
+  enable: true
   # Style: simple / flat
   style: flat
   # When will it be shown
   limit_day: 365
   # Position: top / bottom
   position: top
-  message_prev: It has been
-  message_next: days since the last update, the content of the article may be outdated.
+  message_prev: 本文最后更新于
+  message_next: 天前，部分内容可能已经过时，请注意甄别
 
 # --------------------------------------
 # Footer Settings
 # --------------------------------------
 footer:
   nav:
+  # 关掉主题自带的「© 2026 By xxx」，版权信息改写进下面的 custom_text
   owner:
-    enable: true
+    enable: false
     since: 2026
   # Copyright of theme and framework
   copyright:
     enable: true
     version: true
-  custom_text: 本站由 <a href="https://hexo.io/">Hexo</a> 驱动 · 主题 <a href="https://butterfly.js.org/">Butterfly</a>
+  custom_text: |
+    <div class="ff-footer">
+      <p class="ff-footer-main">
+        © 2026 <strong>flewfish 的博客</strong> · 林深时见鹿
+      </p>
+      <p class="ff-footer-sub">
+        人生海海，山山而川 · 由 <span class="ff-heart">♥</span> 与
+        <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> 驱动
+      </p>
+    </div>
 
 # --------------------------------------
 # Aside Settings
@@ -297,14 +338,20 @@ aside:
       link: https://github.com/flewfish
   card_announcement:
     enable: true
-    content: This is my Blog
+    content: |
+      <div class="ff-notice">
+        <p>欢迎来到 <strong>林深时见鹿</strong> 🦌</p>
+        <p>这里记录网络安全的所学所思：渗透测试 · 漏洞复现 · 内网渗透 · 免杀对抗</p>
+        <p class="ff-notice-tip">点右上角搜索图标可以搜全站文章</p>
+      </div>
   card_recent_post:
     enable: true
     # If set 0 will show all
-    limit: 5
+    limit: 4
     # Sort: date / updated
     sort: date
-    sort_order:
+    # 侧边栏卡片排序，数字越小越靠上（仅文章列表页生效）
+    sort_order: 3
   card_newest_comments:
     enable: false
     sort_order:
@@ -315,23 +362,24 @@ aside:
   card_categories:
     enable: true
     # If set 0 will show all
-    limit: 8
+    limit: 6
     # Choose: none / true / false
     expand: none
-    sort_order:
+    sort_order: 4
   card_tags:
     enable: true
     # If set 0 will show all
-    limit: 40
+    limit: 30
     color: false
     custom_colors:
     # Order of tags, random/name/length
     orderby: random
     # Sort of order. 1, asc for ascending; -1, desc for descending
     order: 1
-    sort_order:
+    sort_order: 5
   card_archives:
-    enable: true
+    # 只有一篇文章时归档卡是噪音，先关掉；文章多了再打开
+    enable: false
     # Type: monthly / yearly
     type: monthly
     # Eg: YYYY年MM月
@@ -342,7 +390,8 @@ aside:
     limit: 8
     sort_order:
   card_post_series:
-    enable: true
+    # 用到「系列文章」时再把 series 写进 front-matter 并打开
+    enable: false
     # The title shows the series name
     series_title: false
     # Order by title or date
@@ -353,11 +402,12 @@ aside:
     enable: true
     post_count: true
     last_push_date: true
-    sort_order:
+    sort_order: 6
     # Time difference between publish date and now
     # Formal: Month/Day/Year Time or Year/Month/Day Time
     # Leave it empty if you don't enable this feature
-    runtime_date:
+    # 本站开站时间，侧边栏会显示「已运行 X 天」
+    runtime_date: 2026/10/16 00:00:00
 
 # --------------------------------------
 # Bottom right button
@@ -398,7 +448,8 @@ darkmode:
   end:
 
 # Show scroll percent in scroll-to-top button
-rightside_scroll_percent: false
+# 回到顶部按钮里显示阅读进度百分比
+rightside_scroll_percent: true
 
 # Don't modify the following settings unless you know how they work
 # Choose: readmode,translate,darkmode,hideAside,toc,chat,comment
@@ -428,12 +479,14 @@ photofigcaption: false
 copy:
   enable: true
   # Add the copyright information after copied content
+  # 复制超过 300 字时自动附上出处，防止整篇被搬走
   copyright:
-    enable: false
-    limit_count: 150
+    enable: true
+    limit_count: 300
 
+# 字数统计 / 阅读时长，依赖 hexo-wordcount 插件（已在 package.json 里）
 wordcount:
-  enable: false
+  enable: true
   # Display the word count of the article in post meta
   post_wordcount: true
   # Display the time to read the article in post meta
@@ -520,8 +573,9 @@ share:
 
   # Share.js
   # https://github.com/overtrue/share.js
+  # 只留国内能用的平台（facebook / x 国内打不开，去掉）
   sharejs:
-    sites: facebook,x,wechat,weibo,qq
+    sites: weibo,qq,wechat,qzone,douban
 
   # AddToAny
   # https://www.addtoany.com/
@@ -800,9 +854,11 @@ rounded_corners_ui: true
 text_align_justify: false
 
 # Add a mask to the header and footer
+# 注意：header 必须保持 true —— custom.css 里把默认的黑色遮罩换成了紫罗兰渐变，
+# 但那层遮罩的伪元素本身是主题在 header:true 时才渲染的，关掉就连带没了。
 mask:
   header: true
-  footer: true
+  footer: false
 
 # Loading Animation
 preloader:
@@ -822,13 +878,14 @@ display_mode: light
 
 # Configuration for beautifying the content of the article
 beautify:
-  enable: false
+  enable: true
   # Specify the field to beautify (site or post)
   field: post
   # Specify the icon to be used as a prefix for the title, such as '\f0c1'
-  title_prefix_icon:
+  # fa-bolt，标题前的小闪电
+  title_prefix_icon: '\f0e7'
   # Specify the color of the title prefix icon, such as '#F47466'
-  title_prefix_icon_color:
+  title_prefix_icon_color: '#9d4edd'
 
 # Global font settings
 # Don't modify the following settings unless you know how they work
@@ -1068,6 +1125,9 @@ inject:
   head:
     # 樱花花瓣样式（sakura-js）
     - '<link rel="stylesheet" href="/js/sakura.min.css">'
+    # ---- 魔改主样式表（紫罗兰玻璃拟态）----
+    # 必须放在主题自带的样式之后才压得住，inject.head 正好插在 </head> 前
+    - '<link rel="stylesheet" href="/css/modify.css">'
   bottom:
     # ---- live2d 看板娘 ----
     # 官方推荐用法；live2d-widgets 是 stevenjoezhang/live2d-widget (MIT) 的新版
@@ -1076,8 +1136,8 @@ inject:
     # sakura-js 1.1.1 (MIT)，已自托管到 source/js/，不依赖第三方 CDN
     - '<script src="/js/sakura.min.js"></script>'
     - '<script>new Sakura("body");</script>'
-    # ---- 光标拖尾粒子（自实现，自托管）----
-    - '<script src="/js/cursor-trail.js"></script>'
+    # ---- 紫水晶月光光标（自实现，自托管）----
+    - '<script src="/js/cursor.js"></script>'
 
 # CDN Settings
 # Don't modify the following settings unless you know how they work
@@ -1153,10 +1213,14 @@ CDN:
 
 # --------------------------------------
 # hexo-butterfly-swiper 首页轮播图
-# 用法：在文章 front-matter 里加 swiper_index: 1（数字越大越靠前）
+# 用法：在文章 front-matter 里加 swiper_index: 1（数字越大越靠前），
+#       并且配上 cover 封面图，否则该文章不会进轮播。
 # --------------------------------------
 swiper:
-  enable: true
+  # 暂时关掉：轮播只收 front-matter 里写了 swiper_index 的文章，
+  # 一篇都没有时插件照样会往首页注入一个空的轮播外壳，看着就是一块空白。
+  # 等你发了几篇带封面 + swiper_index 的文章，把这里改回 true 即可。
+  enable: false
   priority: 5
   enable_page: /
   exclude:
