@@ -415,6 +415,145 @@ body {
   border-color: transparent;
 }
 
+/* 首页分类卡片墙 -------------------------------------------------------------
+   由 scripts/category-wall.js 在首页运行时挂到 #recent-posts 里。
+   文章列表是 inline-block 瀑布流，这里是块级元素，会自动另起一行。 */
+.ff-catwall {
+  display: block;
+  width: 100%;
+  margin-top: 28px;
+  clear: both;
+}
+
+.ff-catwall-head {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin-bottom: 14px;
+  color: var(--ff-primary);
+  font-size: 1.15em;
+  font-weight: 700;
+  letter-spacing: .5px;
+}
+
+[data-theme='dark'] .ff-catwall-head {
+  color: var(--ff-accent);
+}
+
+.ff-catwall-head i {
+  color: var(--ff-primary-soft);
+}
+
+.ff-catwall-list {
+  display: grid;
+  /* auto-fit：分类少的时候一张卡自动铺满整行，多了再自动分列 */
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 14px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ff-catwall-item {
+  margin: 0;
+  list-style: none;
+}
+
+.ff-catwall-link {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 5px;
+  box-sizing: border-box;
+  height: 180px;
+  padding: 20px 22px;
+  border-radius: var(--ff-radius);
+  background-color: #b57bff;
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  box-shadow: var(--ff-shadow);
+  overflow: hidden;
+  text-decoration: none !important;
+  transition: transform .35s cubic-bezier(.2, .8, .3, 1), box-shadow .35s ease;
+}
+
+/* 分类只有一两个时卡片高一点，不然一小块配一大片空的更难看 */
+.ff-catwall--few .ff-catwall-link {
+  height: 420px;
+}
+
+/* 压暗蒙层，保证白字在任何封面上都读得清 */
+.ff-catwall-link::before {
+  position: absolute;
+  inset: 0;
+  content: '';
+  background: linear-gradient(180deg, rgba(45, 10, 61, .20) 0%, rgba(45, 10, 61, .74) 100%);
+  transition: opacity .35s ease;
+}
+
+.ff-catwall-link::after {
+  position: absolute;
+  inset: 0;
+  content: '';
+  border: 1px solid rgba(255, 255, 255, .35);
+  border-radius: var(--ff-radius);
+  pointer-events: none;
+}
+
+.ff-catwall-link:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--ff-shadow-h);
+}
+
+.ff-catwall-link:hover::before {
+  opacity: .72;
+}
+
+.ff-catwall-name,
+.ff-catwall-count {
+  position: relative;
+  z-index: 1;
+  color: #fff !important;
+  text-shadow: 0 1px 8px rgba(0, 0, 0, .55);
+}
+
+.ff-catwall-name {
+  font-size: 1.25em;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+}
+
+.ff-catwall-count {
+  font-size: .86em;
+  opacity: .9;
+}
+
+.ff-catwall-count i {
+  margin-right: 4px;
+}
+
+@media screen and (max-width: 768px) {
+  .ff-catwall-link,
+  .ff-catwall--few .ff-catwall-link {
+    height: 150px;
+  }
+
+  .ff-catwall-name {
+    font-size: 1.1em;
+  }
+}
+
+/* 首页侧栏的「最新文章」是重复内容 -----------------------------------------
+   首页主列本身就是文章列表，侧栏再挂一张「最新文章」纯属重复，而且它把侧栏
+   撑得很高，导致左列下方空出一大块。这里只在「存在 #recent-posts 的页面」
+   （也就是首页）把它藏掉，其它页面的侧栏照常显示。
+   :has() 现在主流的 Chrome / Edge / Safari / Firefox 都支持。 */
+body:has(#recent-posts) #aside-content .card-recent-post {
+  display: none;
+}
+
 /* ---------------------------------------------------------------- 08 侧边栏卡片 */
 #aside-content .card-widget {
   border-radius: var(--ff-radius);

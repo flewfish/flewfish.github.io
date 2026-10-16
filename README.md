@@ -149,13 +149,14 @@ swiper_index: 1              # 可选：数字越大越靠前，出现在首页�
 主题在 Butterfly 基础上做了一层视觉改造，风格叫「紫罗兰玻璃拟态」：
 粉紫渐变卡片 + 毛玻璃模糊 + 大圆角 + 柔光阴影。
 
-**所有魔改只落在两个文件里，没有动 `themes/butterfly` 下任何源码**，
+**所有魔改只落在三个自己写的文件里，没有动 `themes/butterfly` 下任何源码**，
 所以将来升级主题不会把改动冲掉：
 
 | 文件 | 作用 |
 |---|---|
 | `source/css/modify.css` | 全部样式覆盖（配色、导航栏、卡片、文章页、页脚、搜索…） |
 | `source/js/cursor.js` | 紫水晶月光光标 |
+| `scripts/category-wall.js` | 首页分类卡片墙（见下） |
 
 这两个文件通过 `_config.butterfly.yml` 的 `inject` 段挂上去：
 
@@ -186,6 +187,29 @@ inject:
 
 > 樱花与光标是**自托管**的，不依赖第三方 CDN。
 > live2d 因模型文件过大无法自托管，走 `fastly.jsdelivr.net`。
+
+### 首页分类卡片墙
+
+`scripts/category-wall.js` 是**自己写的 Hexo 插件**，作用是在首页文章列表下面
+铺一排带封面的分类卡片。
+
+**为什么不直接用 `hexo-butterfly-categories-card` 那个现成插件：**
+它的教程要求你去 `node_modules` 里改插件自己的源码。但 GitHub Actions 每次构建
+都会跑 `npm ci` 重新装依赖 —— **本地改的 node_modules 在线上根本不存在**。
+所以这里只用公开的 Hexo 扩展点重新实现了一遍，不碰任何第三方源码。
+
+配置在 `_config.butterfly.yml` 的 `categoryWall:` 段：
+
+```yaml
+categoryWall:
+  enable: true
+  default_cover: /img/cover-default.jpg   # 没单独配封面的分类用这张
+  cover:
+    折腾记录: /img/banner.jpg              # 给个别分类单独指定封面
+```
+
+顺带一提：分类少 + 文章少的时候，卡片会自动变高。因为那时候左侧列表很短，
+矮卡片配一大片空白更难看；等文章多起来会自动回到常规高度。
 
 ### 关于首页轮播图（当前是关掉的）
 

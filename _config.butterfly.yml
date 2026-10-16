@@ -360,7 +360,9 @@ aside:
     storage: 10
     avatar: true
   card_categories:
-    enable: true
+    # 分类已经在首页主列底部做成了「分类卡片墙」（见 categoryWall 段），
+    # 侧边栏再来一份纯文字列表就重复了，所以关掉
+    enable: false
     # If set 0 will show all
     limit: 6
     # Choose: none / true / false
@@ -1210,6 +1212,20 @@ CDN:
     # valine:
     # waline_css:
     # waline_js:
+
+# --------------------------------------
+# 首页分类卡片墙
+# 实现在 scripts/category-wall.js（自研，不改任何第三方源码，CI 能跑）
+# 作用：在首页文章列表下方铺一排分类卡片。文章还少的时候，左列会比右侧
+#       侧栏短很多、往下滑是一大片空白，这块内容正好把那片地方填上。
+# --------------------------------------
+categoryWall:
+  enable: true
+  # 没单独指定封面的分类统一用这张
+  default_cover: /img/cover-default.jpg
+  # 给个别分类单独指定封面（没写的就用上面的默认值）
+  cover:
+    折腾记录: /img/banner.jpg
 
 # --------------------------------------
 # hexo-butterfly-swiper 首页轮播图
