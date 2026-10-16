@@ -55,6 +55,68 @@ git push
 
 ---
 
+## 一·二、别人想给你投稿 / 从别处搬 md 进来
+
+### 让别人投稿的三条路
+
+| 路线 | 怎么做 | 适合 |
+|---|---|---|
+| **别人发给你，你发** | 对方把 md（连同图片打包）发你，你本地跑一遍再 push | 最简单，你完全控制内容 |
+| **加协作者** | 仓库 → Settings → Collaborators → Add people。对方接受邀请后就能直接 push | 信得过的人 |
+| **Fork + Pull Request** | 对方 Fork 你的仓库 → 改 → 提 PR → 你在 GitHub 上点 Merge | **推荐**，对方不需要权限，你还能先审一遍 |
+
+Fork + PR 那条路，对方**不需要装 Git、不需要装 Node**，全程在 GitHub 网页上就能干完。
+
+### 从别处搬 md：图片是最大的坑
+
+你在 Typora / Obsidian / 思源里写的 md，图片路径通常是这种：
+
+```markdown
+![截图](../../%5Bimage%5D/image-20241210114007774.png)
+```
+
+**这种路径直接丢进博客，图片全 404** —— 因为博客上根本没有 `../../[image]/` 这个目录。
+必须把图片搬到仓库里，再把路径改成博客能认的绝对路径。
+
+手动做一遍要：找到图片 → 压缩 → 复制进 `source/img/` → 逐条改写路径。
+**别手动做，用现成的脚本：**
+
+```powershell
+# 先试运行：只报告它打算干什么，不写任何文件
+.\tools\publish-post.ps1 -MdFile "C:\NOTE\某篇笔记.md" -Slug my-post -Category 实战记录 -Tags 渗透,提权 -DryRun
+
+# 确认没问题，去掉 -DryRun 正式生成
+.\tools\publish-post.ps1 -MdFile "C:\NOTE\某篇笔记.md" -Slug my-post -Category 实战记录 -Tags 渗透,提权
+```
+
+它会自动：
+
+1. 把正文里所有图片路径解析成磁盘上的真实文件
+   （相对路径、绝对路径、URL 编码过的、Markdown 的 `![]()` 和 HTML 的 `<img src="">` 都认）
+2. 逐张压缩成 JPEG（PNG 转 JPEG 会先铺白底，否则透明区域会变黑块）
+3. 复制到 `source/img/<slug>/01.jpg`、`02.jpg`… 并重新编号
+4. 把正文里的路径改写成 `/img/<slug>/NN.jpg`
+5. 补上 front-matter，生成到 `source/_posts/<slug>.md`
+
+**有任何一张图片在磁盘上找不到，它会直接报错停下，绝不硬发** —— 避免发出去一堆坏图。
+
+参数速查：
+
+| 参数 | 说明 |
+|---|---|
+| `-MdFile` | 要发布的本地 md（必填） |
+| `-Slug` | 网址用的英文短名，如 `target2`。不填就用原文件名（中文也行，只是网址会被编码） |
+| `-Title` | 标题。不填则用原文件 front-matter 的 title，再退回文件名 |
+| `-Category` / `-Tags` | 分类 / 标签，标签逗号分隔 |
+| `-Date` | 发布日期。**不填会用文件的「修改时间」**，建议明确指定 |
+| `-Description` | 首页卡片上的一句话摘要 |
+| `-DryRun` | 只报告，不写文件 |
+
+> ⚠️ 如果源文件不是 UTF-8（比如记事本存的 ANSI），脚本会警告你。
+> 照着提示用编辑器另存为 UTF-8 再跑一次，否则中文会变成乱码。
+
+---
+
 ## 二、文章的 Front Matter 格式
 
 ```yaml
