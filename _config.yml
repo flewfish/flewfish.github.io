@@ -96,7 +96,17 @@ ignore:
 # Extensions
 ## Plugins: https://hexo.io/plugins/
 ## Themes: https://hexo.io/themes/
-theme: amazing
+theme: butterfly
+
+# Search
+## 供 Butterfly 主题的本地搜索（local_search）使用，
+## hexo-generator-searchdb 插件会据此生成 search.xml 索引文件
+search:
+  path: search.xml
+  field: post
+  content: true
+  format: html
+  limit: 10000
 
 # Deployment
 ## 本博客由 GitHub Actions 自动构建部署（见 .github/workflows/deploy.yml），

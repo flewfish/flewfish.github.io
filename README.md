@@ -1,6 +1,6 @@
 # 我的博客
 
-基于 [Hexo](https://hexo.io/) + [amazing 主题](https://github.com/removeif/hexo-theme-amazing)，
+基于 [Hexo](https://hexo.io/) + [Butterfly 主题](https://github.com/jerryc127/hexo-theme-butterfly)，
 由 **GitHub Actions 自动构建并部署**到 GitHub Pages。
 
 线上地址：https://flewfish.github.io/
@@ -23,6 +23,8 @@
 ### 方式 A：本地写（推荐）
 
 ```powershell
+cd D:\个人博客
+
 # 1. 新建文章
 npx hexo new "文章标题"
 
@@ -38,7 +40,7 @@ git commit -m "新增文章：文章标题"
 git push
 ```
 
-推送后约 **1 分钟**自动上线，不需要做别的。
+推送后约 **1 分钟**自动上线。
 
 ### 方式 B：手机上写
 
@@ -49,13 +51,11 @@ git push
 4. 内容按下面的格式写
 5. 点 **Commit changes**
 
-同样会自动构建部署。**手机也能发文章，完全不依赖电脑。**
+**手机也能发文章，完全不依赖电脑。**
 
 ---
 
 ## 二、文章的 Front Matter 格式
-
-每篇文章开头必须有这段（用 `---` 包起来）：
 
 ```yaml
 ---
@@ -65,6 +65,9 @@ tags:
   - 随笔
 categories:
   - 生活
+cover: /img/封面.jpg          # 可选：文章封面
+description: 一句话摘要        # 可选：首页显示的摘要
+swiper_index: 1              # 可选：数字越大越靠前，出现在首页轮播图
 ---
 这里开始写正文，用 Markdown 语法……
 
@@ -72,12 +75,10 @@ categories:
 
 - 列表项
 - **加粗**、`代码`、[链接](https://example.com)
+```
 
-```python
-# 代码块会自动高亮
-print("hello")
-```
-```
+> **首页轮播图**由 `hexo-butterfly-swiper` 插件驱动。
+> 只有 Front Matter 里写了 `swiper_index` 的文章才会进轮播，并且需要配 `cover` 封面图。
 
 ---
 
@@ -86,12 +87,13 @@ print("hello")
 | 命令 | 作用 |
 |---|---|
 | `npx hexo new "标题"` | 新建一篇文章 |
+| `npx hexo new page "名字"` | 新建一个独立页面 |
 | `npx hexo server` | 本地预览 → http://localhost:4000 |
 | `npx hexo clean` | 清理缓存和 `public/` |
 | `npx hexo generate` | 生成静态文件到 `public/` |
 | `npm install` | 首次 clone 后安装依赖 |
 
-> ⚠️ **你不需要执行 `hexo deploy`。** 部署完全交给 GitHub Actions，本地没有配置 deployer。
+> ⚠️ **你不需要执行 `hexo deploy`。** 部署完全交给 GitHub Actions。
 
 ---
 
@@ -99,31 +101,37 @@ print("hello")
 
 | 想改什么 | 改哪个文件 |
 |---|---|
-| 站点标题、作者、语言、网址、每页文章数 | `_config.yml` |
-| 主题外观、导航菜单、头像、社交链接、背景图、live2d、音乐播放器 | `_config.amazing.yml` |
+| 站点标题、副标题、作者、语言、网址、文章数 | `_config.yml` |
+| 导航菜单、头像、横幅图、社交链接、暗色模式、搜索、页脚 | `_config.butterfly.yml` |
 | 文章内容 | `source/_posts/*.md` |
-| 独立页面（关于我等） | `source/` 下新建目录 + `index.md` |
+| 关于页 | `source/about/index.md` |
+| 留言板 | `source/comments/index.md` |
+| 首页轮播开关与样式 | `_config.butterfly.yml` 末尾的 `swiper:` 段 |
 
-> `_config.amazing.yml` 会**覆盖** `themes/amazing/_config.yml`，所以你只改前者即可，
+> `_config.butterfly.yml` 会**覆盖** `themes/butterfly/_config.yml`，所以你只改前者即可，
 > 这样将来更新主题不会冲掉你的配置。
+
+### 换头像 / 横幅图
+
+1. 把图片放进 `source/img/`（没有就新建这个目录）
+2. 在 `_config.butterfly.yml` 里引用，例如：
+   ```yaml
+   avatar:
+     img: /img/avatar.png
+   index_img: /img/banner.jpg
+   ```
 
 ---
 
-## 五、⚠️ 依赖已锁定，请不要随意升级
+## 五、⚠️ 已经填好的坑，请不要随意改动
 
-这个项目踩过两个真实的坑，版本都已锁死：
-
-| 包 | 锁定版本 | 为什么 |
+| 项 | 设定 | 为什么 |
 |---|---|---|
-| `hexo` | `^7.3.0` | Hexo 8 依赖 `strip-ansi@^7`（纯 ESM），需要 Node ≥ 20.19 才能 `require()`；而且 amazing 主题自己声明的就是 `hexo: ^7.1.1`，Hexo 7 才是它的正确搭配 |
-| `babel-plugin-inferno` | `6.8.5` | 从 `6.9.0` 起改用 Babel 8（依赖 `@babel/plugin-syntax-jsx@^8`，纯 ESM），在 Node 20 上会抛 `ERR_REQUIRE_ESM`，**导致所有页面渲染成 0 字节空白** |
+| `hexo` | `^7.3.0` | Hexo 8 依赖 `strip-ansi@^7`（纯 ESM），需要 Node ≥ 20.19 才能 `require()`。本机 Node 是 **20.12.2**，升到 Hexo 8 会直接崩 |
+| 第三方 CDN | `fastly.jsdelivr.net` | 国内 **`cdn.jsdelivr.net` 已被墙**（实测连接超时）。`fastly` 是同一份内容的官方备用节点，同样支持自动压缩。**不要改回 jsdelivr**，否则图标和特效会全挂 |
+| 本地搜索 | `hexo-generator-searchdb` | Butterfly 的 `local_search` 依赖它生成 `search.xml` 索引；缺了会直接构建报错 `Cannot read properties of undefined (reading 'path')` |
 
-**如果哪天博客页面突然变全白**，第一件事就是检查这两个版本号有没有被改掉：
-
-```powershell
-node -e "const p=require('./package.json'); console.log(p.dependencies.hexo, p.dependencies['babel-plugin-inferno'])"
-# 应该输出： ^7.3.0 6.8.5
-```
+改完主题或依赖后，**先本地跑一次** `npx hexo generate` 确认没报错再推送。
 
 ---
 
@@ -132,11 +140,20 @@ node -e "const p=require('./package.json'); console.log(p.dependencies.hexo, p.d
 - 推送到 `main` 分支 → 自动部署
 - 也可在仓库 **Actions** 页面点 **Run workflow** 手动触发
 - 部署配置：`.github/workflows/deploy.yml`
-- 构建日志：`https://github.com/flewfish/flewfish.github.io/actions`
+- 构建日志：https://github.com/flewfish/flewfish.github.io/actions
 
 ---
 
-## 七、在新电脑上恢复
+## 七、还没做的（想要的话再说）
+
+- [ ] **评论系统**：留言板目前是静态页，需要接入 [giscus](https://giscus.app/zh-CN)（免费、用 GitHub 账号登录）或 Twikoo / Waline
+- [ ] **live2d 看板娘**、**樱花飘落**、**自定义光标**：这几个是参考站的自定义脚本，需要额外注入
+- [ ] **站点信息**：站名、签名、头像、横幅图目前是占位
+- [ ] **自定义域名**（可选，约 50–80 元/年，不是服务器）
+
+---
+
+## 八、在新电脑上恢复
 
 ```powershell
 git clone git@github.com:flewfish/flewfish.github.io.git
