@@ -26,8 +26,8 @@
 
 [CmdletBinding()]
 param(
-    # 要发布的本地 md 文件（必填）
-    [Parameter(Mandatory = $true, Position = 0)]
+    # 要发布的本地 md 文件。不填的话脚本会当场问你要
+    [Parameter(Position = 0)]
     [string]$MdFile,
 
     # 文章网址用的英文短名，例如 target2。不填就用原文件名（中文也能跑，只是网址会被编码成一长串）
@@ -36,8 +36,8 @@ param(
     # 标题。不填则依次尝试：原文件 front-matter 的 title -> 原文件名
     [string]$Title,
 
-    # 分类，对应首页那张分类卡片墙
-    [string]$Category = '未分类',
+    # 分类，对应首页那张分类卡片墙。不填会弹出菜单让你选（或新建）
+    [string]$Category,
 
     # 标签，多个用逗号隔开：-Tags 靶机渗透,提权
     [string[]]$Tags = @(),
@@ -56,7 +56,10 @@ param(
     [int]$Quality  = 82,
 
     # 只报告不写文件
-    [switch]$DryRun
+    [switch]$DryRun,
+
+    # 禁用一切交互提问（给自动化 / AI 用）。没传的分类会退回「未分类」
+    [switch]$NonInteractive
 )
 
 $ErrorActionPreference = 'Stop'
@@ -67,6 +70,104 @@ $BlogRoot = (Resolve-Path -LiteralPath $BlogRoot).Path
 
 # ---------------------------------------------------------------- 小工具
 function Write-Step($msg) { Write-Host "  $msg" }
+
+# 读一行输入（用 [Console]::ReadLine，这样在普通窗口和管道里都能用）
+function Read-Line([string]$prompt, [string]$default = '') {
+    if ($default) { Write-Host "$prompt [$default]: " -NoNewline }
+    else          { Write-Host "${prompt}: " -NoNewline }
+    $line = [Console]::ReadLine()
+    if ($null -eq $line) { $line = '' }
+    $line = $line.Trim()
+    if (-not $line) { return $default }
+    return $line
+}
+
+# 把已有文章里用过的分类 / 标签读出来（field 传 'categories' 或 'tags'）
+function Get-ExistingMeta([string]$field) {
+    $vals = New-Object System.Collections.ArrayList
+    $dir = Join-Path $BlogRoot 'source\_posts'
+    if (-not (Test-Path -LiteralPath $dir)) { return @() }
+    foreach ($p in (Get-ChildItem -LiteralPath $dir -Filter *.md -ErrorAction SilentlyContinue)) {
+        $t = [System.IO.File]::ReadAllText($p.FullName, [System.Text.Encoding]::UTF8)
+        if ($t -notmatch '(?s)^---\s*\r?\n(.*?)\r?\n---') { continue }
+        $fm = $Matches[1]
+        $esc = [regex]::Escape($field)
+        # 列表写法： categories: 换行后  - xxx
+        $block = [regex]::Match($fm, "(?ms)^$esc`:\s*\r?\n((?:[ \t]*-[ \t]*.+\r?\n?)+)")
+        if ($block.Success) {
+            foreach ($line in ($block.Groups[1].Value -split "`n")) {
+                $v = ($line -replace '^\s*-\s*', '').Trim().Trim('"', "'")
+                if ($v -and -not $vals.Contains($v)) { [void]$vals.Add($v) }
+            }
+        }
+        # 行内写法： categories: [a, b]
+        $inline = [regex]::Match($fm, "(?m)^$esc`:\s*\[(.+?)\]")
+        if ($inline.Success) {
+            foreach ($v in ($inline.Groups[1].Value -split ',')) {
+                $v = $v.Trim().Trim('"', "'")
+                if ($v -and -not $vals.Contains($v)) { [void]$vals.Add($v) }
+            }
+        }
+    }
+    return @($vals)
+}
+
+# 分类选择：列出现有的，可以选编号，也可以直接输入新分类名
+function Select-Category {
+    $existing = Get-ExistingMeta 'categories'
+    Write-Host ""
+    Write-Host "选择分类（首页的分类卡片墙就是按这个分组的）：" -ForegroundColor Cyan
+    for ($i = 0; $i -lt $existing.Count; $i++) {
+        Write-Host ("  [{0}] {1}" -f ($i + 1), $existing[$i])
+    }
+    Write-Host ("  [{0}] 新建一个分类" -f ($existing.Count + 1))
+    $default = if ($existing.Count -gt 0) { '1' } else { "$($existing.Count + 1)" }
+    $pick = Read-Line "输入编号，或直接打字输入一个新分类名" $default
+
+    if ($pick -match '^\d+$') {
+        $n = [int]$pick
+        if ($n -ge 1 -and $n -le $existing.Count) { return $existing[$n - 1] }
+        if ($n -eq $existing.Count + 1) {
+            $name = Read-Line "新分类叫什么" ''
+            if ($name) { return $name }
+            return '未分类'
+        }
+    }
+    if ($pick) { return $pick }
+    if ($existing.Count -gt 0) { return $existing[0] }
+    return '未分类'
+}
+
+# 标签选择：可以选多个（用逗号隔开），也可以直接输入新标签
+function Select-Tags {
+    $existing = Get-ExistingMeta 'tags'
+    if ($existing.Count -eq 0) {
+        $raw = Read-Line "标签（多个用逗号隔开，可留空）" ''
+        return @(($raw -split ',') | ForEach-Object { $_.Trim() } | Where-Object { $_ })
+    }
+    Write-Host ""
+    Write-Host "选择标签（可多选，输入编号逗号隔开，例如 1,3；直接打字则是新标签）：" -ForegroundColor Cyan
+    for ($i = 0; $i -lt $existing.Count; $i++) {
+        Write-Host ("  [{0}] {1}" -f ($i + 1), $existing[$i])
+    }
+    $raw = Read-Line "你的选择（可留空）" ''
+    if (-not $raw) { return @() }
+
+    $out = New-Object System.Collections.ArrayList
+    foreach ($part in ($raw -split ',')) {
+        $p = $part.Trim()
+        if (-not $p) { continue }
+        if ($p -match '^\d+$') {
+            $n = [int]$p
+            if ($n -ge 1 -and $n -le $existing.Count) {
+                if (-not $out.Contains($existing[$n - 1])) { [void]$out.Add($existing[$n - 1]) }
+            }
+        } elseif (-not $out.Contains($p)) {
+            [void]$out.Add($p)
+        }
+    }
+    return @($out)
+}
 
 # PNG 转 JPEG：先铺白底，否则透明区域会变成黑块
 function Compress-ToJpeg([string]$in, [string]$out, [int]$maxW, [int]$q) {
@@ -102,10 +203,21 @@ function Resolve-ImagePath([string]$raw, [string]$mdDir) {
 }
 
 # ---------------------------------------------------------------- 开始
+if (-not $MdFile) {
+    Write-Host ""
+    $MdFile = Read-Line "把 md 文件拖到这个窗口里（或粘贴完整路径）" ''
+    if (-not $MdFile) { throw "没有提供 md 文件。" }
+    $MdFile = $MdFile.Trim('"', "'")      # 拖文件进来时路径常带引号
+}
 if (-not (Test-Path -LiteralPath $MdFile)) { throw "找不到文件：$MdFile" }
 $mdFull = (Resolve-Path -LiteralPath $MdFile).Path
 $mdDir  = Split-Path $mdFull -Parent
 if (-not $Slug) { $Slug = [System.IO.Path]::GetFileNameWithoutExtension($mdFull) }
+if ($Slug -match '[^\x00-\x7F]') {
+    Write-Host ""
+    Write-Host "  提示：短名里有中文，生成的网址会变成一长串 %E4%B8%AD... 这种编码。" -ForegroundColor Yellow
+    Write-Host "        想好看的话下次加 -Slug 指定一个英文短名，例如 -Slug target3" -ForegroundColor Yellow
+}
 
 Write-Host ""
 Write-Host "=== 发布到博客 ===" -ForegroundColor Cyan
@@ -136,6 +248,31 @@ if ($text -match '(?s)^---\s*\r?\n(.*?)\r?\n---\s*\r?\n') {
 
 if (-not $Title) { $Title = if ($fmTitle) { $fmTitle } else { [System.IO.Path]::GetFileNameWithoutExtension($mdFull) } }
 if (-not $Date)  { $Date  = if ($fmDate)  { $fmDate }  else { (Get-Item -LiteralPath $mdFull).LastWriteTime.ToString('yyyy-MM-dd HH:mm:ss') } }
+
+# ---- 交互式补全：命令行没给的，当场问 ----
+$prompted = $false
+
+if (-not $Category) {
+    if ($NonInteractive) { $Category = '未分类' }
+    else { $Category = Select-Category; $prompted = $true }
+}
+
+if (-not $PSBoundParameters.ContainsKey('Tags')) {
+    if ($NonInteractive) { $Tags = @() }
+    else { $Tags = Select-Tags; $prompted = $true }
+}
+
+# 只要问过，就在真正动文件前再确认一次
+if ($prompted -and -not $DryRun) {
+    Write-Host ""
+    Write-Host "--- 确认一下 ---" -ForegroundColor Cyan
+    Write-Host "  标题: $Title"
+    Write-Host "  分类: $Category"
+    Write-Host "  标签: $(if ($Tags.Count -gt 0) { $Tags -join ', ' } else { '（无）' })"
+    Write-Host "  日期: $Date"
+    $ok = Read-Line "没问题就回车继续（输入 n 取消）" ''
+    if ($ok -match '^[nN]') { Write-Host "已取消，没有写任何文件。"; exit }
+}
 
 # 3. 找出所有图片引用，按出现顺序去重
 $body = $text
