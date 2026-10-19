@@ -93,20 +93,29 @@ function Get-ExistingMeta([string]$field) {
         $fm = $Matches[1]
         $esc = [regex]::Escape($field)
         # 列表写法： categories: 换行后  - xxx
-        $block = [regex]::Match($fm, "(?ms)^$esc`:\s*\r?\n((?:[ \t]*-[ \t]*.+\r?\n?)+)")
+        # ⚠️ 这里绝对不能用 (?s) 配 .+ —— 开了单行模式后 . 会跨行匹配，
+        #    把同级的 cover: / description: 一起吞进来当成分类名（踩过这个坑）。
+        #    必须用 [^\r\n]* 把每行限定在同一行内。
+        $block = [regex]::Match($fm, "(?m)^$esc`:[ \t]*\r?\n((?:[ \t]*-[ \t]*[^\r\n]*(?:\r?\n|$))+)")
         if ($block.Success) {
-            foreach ($line in ($block.Groups[1].Value -split "`n")) {
+            foreach ($line in ($block.Groups[1].Value -split '\r?\n')) {
                 $v = ($line -replace '^\s*-\s*', '').Trim().Trim('"', "'")
                 if ($v -and -not $vals.Contains($v)) { [void]$vals.Add($v) }
             }
         }
-        # 行内写法： categories: [a, b]
-        $inline = [regex]::Match($fm, "(?m)^$esc`:\s*\[(.+?)\]")
+        # 行内数组写法： categories: [a, b]
+        $inline = [regex]::Match($fm, "(?m)^$esc`:[ \t]*\[(.*?)\]")
         if ($inline.Success) {
             foreach ($v in ($inline.Groups[1].Value -split ',')) {
                 $v = $v.Trim().Trim('"', "'")
                 if ($v -and -not $vals.Contains($v)) { [void]$vals.Add($v) }
             }
+        }
+        # 单行标量写法： categories: 红队靶机
+        $scalar = [regex]::Match($fm, "(?m)^$esc`:[ \t]*([^\r\n\[\]]+?)[ \t]*$")
+        if ($scalar.Success) {
+            $v = $scalar.Groups[1].Value.Trim().Trim('"', "'")
+            if ($v -and -not $vals.Contains($v)) { [void]$vals.Add($v) }
         }
     }
     return @($vals)
