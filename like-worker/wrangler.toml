@@ -1,0 +1,13 @@
+# Cloudflare Worker 配置
+# 已在 2026-10-20 部署；database_id 对应线上 D1「blog-like」
+name = "blog-like"
+main = "src/index.js"
+compatibility_date = "2025-09-01"
+
+# Worker 默认启用 *.workers.dev 域名，无需额外配置
+workers_dev = true
+
+[[d1_databases]]
+binding = "DB"
+database_name = "blog-like"
+database_id = "f7a46a2d-cf9a-4ff2-a342-bb3f15871e4c"

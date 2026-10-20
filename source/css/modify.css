@@ -1203,3 +1203,103 @@ body:has(#recent-posts) #aside-content .card-recent-post {
     transform: none;
   }
 }
+
+/* ---------------------------------------------------------------- 16 文章点赞 */
+/* 按钮由 source/js/article-like.js 运行时挂载，数据来自 Cloudflare Worker */
+.post-like {
+  margin: 34px 0 10px;
+  text-align: center;
+}
+
+.post-like-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  padding: 10px 26px;
+  border: 1px solid var(--ff-line);
+  border-radius: 999px;
+  background-color: transparent;
+  background-image: var(--ff-glass-3);
+  color: var(--ff-primary);
+  font-family: var(--ff-font);
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1;
+  cursor: pointer;
+  box-shadow: 0 6px 18px rgba(122, 60, 180, .14);
+  transition: transform .25s ease, box-shadow .25s ease,
+              border-color .25s ease, color .25s ease;
+}
+
+.post-like-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  border-color: var(--ff-accent);
+  box-shadow: var(--ff-shadow-h);
+}
+
+.post-like-btn:active:not(:disabled) {
+  transform: translateY(0) scale(.97);
+}
+
+.post-like-btn i {
+  font-size: 16px;
+  transition: transform .25s ease;
+}
+
+.post-like-btn:hover:not(:disabled) i {
+  transform: scale(1.18);
+}
+
+/* 已点赞：粉色高亮，按钮禁用，避免重复点击 */
+.post-like-btn.is-liked {
+  color: #e2557b;
+  border-color: rgba(255, 93, 143, .4);
+  box-shadow: 0 6px 18px rgba(255, 93, 143, .18);
+  cursor: default;
+}
+
+.post-like-btn.is-liked i {
+  color: #ff5d8f;
+  animation: ff-like-pop .45s ease;
+}
+
+.post-like-tip {
+  margin: 9px 0 0;
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--card-meta);
+  letter-spacing: .3px;
+}
+
+[data-theme='dark'] .post-like-btn {
+  background-image: none;
+  background-color: var(--ff-dark-2);
+  color: var(--ff-accent);
+}
+
+[data-theme='dark'] .post-like-btn.is-liked {
+  background-color: rgba(90, 20, 45, .82);
+  color: #ff9ab8;
+  border-color: rgba(255, 93, 143, .45);
+}
+
+[data-theme='dark'] .post-like-btn.is-liked i {
+  color: #ff9ab8;
+}
+
+@keyframes ff-like-pop {
+  0%   { transform: scale(1); }
+  35%  { transform: scale(1.45) rotate(-12deg); }
+  70%  { transform: scale(.92) rotate(4deg); }
+  100% { transform: scale(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .post-like-btn,
+  .post-like-btn i {
+    transition: none;
+  }
+  .post-like-btn.is-liked i {
+    animation: none;
+  }
+}

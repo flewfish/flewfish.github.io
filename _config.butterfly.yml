@@ -1140,6 +1140,9 @@ inject:
     - '<script>new Sakura("body");</script>'
     # ---- 紫水晶月光光标（自实现，自托管）----
     - '<script src="/js/cursor.js"></script>'
+    # ---- 文章点赞（Cloudflare Worker + D1，后端见仓库 like-worker/）----
+    # 留空时脚本自动跳过；换后端地址时只改这里的 data-api 即可
+    - '<script src="/js/article-like.js" data-api="https://blog-like.2469392809.workers.dev"></script>'
 
 # CDN Settings
 # Don't modify the following settings unless you know how they work
